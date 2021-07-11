@@ -1,7 +1,3 @@
-//
-// Created by Ragwyle Chelsea on 7/8/21.
-//
-
 #include "philo.h"
 
 int	check_args_valid(int argc, char **argv)
@@ -32,7 +28,7 @@ int	check_args_valid(int argc, char **argv)
 	return (0);
 }
 
-void init_structure(t_all *all, int argc, char **argv)
+void	init_structure(t_all *all, int argc, char **argv)
 {
 	all->number_of_philo = ft_atoi(argv[1]);
 	all->time_to_die = ft_atoi(argv[2]) * 1000;
@@ -52,40 +48,81 @@ void init_structure(t_all *all, int argc, char **argv)
 	all->start_time = (all->start.tv_sec * 1000) + (all->start.tv_usec / 1000);
 }
 
-void *routine(void *i)
+int	time_calculate(t_philo *ph)
+{
+	long int current;
+
+	gettimeofday(&ph->all->end, NULL);
+	current = (ph->all->end.tv_sec * 1000) + (ph->all->end.tv_usec / 1000) - ph->all->start_time;
+	return((int)current);
+}
+
+void	custom_sleep(long int time)
+{
+	long int	begin;
+	long int	current;
+	struct timeval	begin_time;
+	struct timeval	current_time;
+
+	gettimeofday(&begin_time, NULL);
+	begin = (begin_time.tv_sec * 1000 + begin_time.tv_usec / 1000) * 1000;
+	while (1)
+	{
+		gettimeofday(&current_time, NULL);
+		current = (current_time.tv_sec * 1000 + current_time.tv_usec / 1000) * 1000;
+		if (current - begin < (long int)(time))
+		{
+			usleep(50);
+			continue ;
+		}
+		break ;
+	}
+}
+
+void	*routine(void *i)
 {
 	t_philo	*ph;
 
-
 	ph = (t_philo *)i;
-	while (1)
+	while (ph->num_eat < ph->all->num_of_meal)
 	{
 //eating
-		pthread_mutex_lock(ph->left_fork);
-		gettimeofday(&ph->all->end, NULL);
-		printf("%ld ms %d has taken a left fork\n", (((ph->all->end.tv_sec * 1000) + (ph->all->end.tv_usec / 1000)) - ph->all->start_time), ph->num);
-		pthread_mutex_lock(ph->right_fork);
-		gettimeofday(&ph->all->end, NULL);
-		printf("%ld ms %d has taken a right fork\n", (((ph->all->end.tv_sec * 1000) + (ph->all->end.tv_usec / 1000)) - ph->all->start_time),  ph->num);
-		printf("%ld ms %d is eating\n", (((ph->all->end.tv_sec * 1000) + (ph->all->end.tv_usec / 1000)) - ph->all->start_time), ph->num);
-		usleep(ph->all->time_to_eat);
-		pthread_mutex_unlock(ph->left_fork);
-		pthread_mutex_unlock(ph->right_fork);
-
+		if (ph->num % 2)
+		{
+			pthread_mutex_lock(ph->left_fork);
+			printf("%d ms %d has taken a left fork\n", time_calculate(ph), ph->num);
+			pthread_mutex_lock(ph->right_fork);
+			printf("%d ms %d has taken a right fork\n", time_calculate(ph), ph->num);
+			printf("%d ms %d is eating\n", time_calculate(ph), ph->num);
+			ph->last_ate = time_calculate(ph);
+			custom_sleep(ph->all->time_to_eat);
+			ph->num_eat++;
+			pthread_mutex_unlock(ph->left_fork);
+			pthread_mutex_unlock(ph->right_fork);
+		}
+		else
+		{
+			pthread_mutex_lock(ph->right_fork);
+			printf("%d ms %d has taken a right fork\n", time_calculate(ph), ph->num);
+			pthread_mutex_lock(ph->left_fork);
+			printf("%d ms %d has taken a left fork\n", time_calculate(ph), ph->num);
+			printf("%d ms %d is eating\n", time_calculate(ph), ph->num);
+			custom_sleep(ph->all->time_to_eat);
+			ph->num_eat++;
+			pthread_mutex_unlock(ph->right_fork);
+			pthread_mutex_unlock(ph->left_fork);
+		}
 //	sleeping
-		gettimeofday(&ph->all->end, NULL);
-		printf("%ld ms %d is sleeping\n", (((ph->all->end.tv_sec * 1000) + (ph->all->end.tv_usec / 1000)) - ph->all->start_time), ph->num);
-		usleep(ph->all->time_to_sleep);
+		printf("%d ms %d is sleeping\n", time_calculate(ph), ph->num);
+		custom_sleep(ph->all->time_to_sleep);
 
 //thinking
-		gettimeofday(&ph->all->end, NULL);
-		printf("%ld ms %d is thinking\n", (((ph->all->end.tv_sec * 1000) + (ph->all->end.tv_usec / 1000)) - ph->all->start_time), ph->num);
-		usleep(100);
+		printf("%d ms %d is thinking\n", time_calculate(ph), ph->num);
 	}
 	return (0);
 }
 
-int main (int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	t_all all;
 	int		i;
@@ -138,35 +175,10 @@ int main (int argc, char **argv)
 	// threads close
 	i = -1;
 	while(++i < all.number_of_philo)
+	{
 		pthread_join(ph[i], NULL);
-
-
-	gettimeofday(&all.end, NULL);
-	printf("Time to execute program %ld milliseconds\n", (((all.end.tv_sec * 1000) + (all.end.tv_usec / 1000)) - ((all.start.tv_sec * 1000) + (all.start.tv_usec / 1000))));
+//		free(ph[i]);
+//		free(&philo[i]);
+	}
+	return 0;
 }
-
-
-
-
-// time explanation
-//	struct timeval tv;
-//	struct timezone tz;
-//	printf("TimeZone-1 = %d\n", tz.tz_minuteswest);
-//	printf("TimeZone-2 = %d\n", tz.tz_dsttime);
-//	// Cast members as specific type of the members may be various
-//	// signed integer types with Unix.
-//	printf("TimeVal-3  = %lld\n", (long long) tv.tv_sec); //seconds from the beginning or era
-//	printf("TimeVal-4  = %lld\n", (long long) tv.tv_usec); //доп микросекунды после вычисления количества секунд с начала эпохи
-//
-//	// Form the seconds of the day
-//	long hms = tv.tv_sec % 86400; //seconds per day
-//	hms += tz.tz_dsttime * 3600; //sec per hour
-//	hms -= tz.tz_minuteswest * 60; //sec per minute
-//	// mod `hms` to insure in positive range of [0...SEC_PER_DAY)
-//	hms = (hms + 86400) % 86400;
-//
-//	// Tear apart hms into h:m:s
-//	int hour = hms / 3600;
-//	int min = (hms % 3600) / 60;
-//	int sec = (hms % 3600) % 60; // or hms % SEC_PER_MIN
-//	printf("Current local time: %d:%02d:%02d\n", hour, min, sec);
