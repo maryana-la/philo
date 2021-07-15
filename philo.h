@@ -20,8 +20,6 @@ typedef struct	s_all
 	int			time_to_sleep;
 	int			num_of_meal;
 	long int	start_time;
-	int 		flag_dead;
-//	int 		num_of_full_philos;
 	struct timeval start;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	*print;
@@ -29,10 +27,11 @@ typedef struct	s_all
 
 typedef struct s_philo
 {
-	int 		num;
-	long int	last_ate;
-	int 		num_eat;
-	struct s_all	*all;
+	int 			num;
+	long int		last_ate;
+	int 			num_eat;
+	t_all			*all;
+	pthread_t		*ph;
 	pthread_mutex_t *left_fork;
 	pthread_mutex_t *right_fork;
 }				t_philo;
@@ -55,6 +54,8 @@ void	ft_putchar_fd(char c, int fd);
 
 long int	time_calculate(void);
 void	custom_sleep(long int time);
-void custom_print(t_philo *ph, int time, char *message, int type);
+void custom_print(t_philo *ph, long int time, char *message, int type);
+void	ft_error_exit(char *error);
+void	ft_free_error(char *error, t_philo *philo);
 
 #endif //PHILO_PHILO_H

@@ -32,57 +32,28 @@ void	custom_sleep(long int time)
 	}
 }
 
-void	ft_putchar(char c)
+void	ft_error_exit(char *error)
 {
-	write(1, &c, 1);
+	printf("%s\n", error);
+	exit (1);
 }
 
-size_t	ft_strlen(const char *s)
+void	ft_free_error(char *error, t_philo *philo)
 {
-	size_t	size;
-
-	size = 0;
-	while (*s++ != '\0')
-		size++;
-	return (size);
+	if (philo->all->forks)
+		free(philo->all->forks);
+	if (philo->ph)
+		free(philo->ph);
+	if (philo)
+		free(philo);
+	printf("%s\n", error);
+	exit (1);
 }
 
-void	ft_putstr(char *s)
-{
-	write(1, s, ft_strlen(s));
-}
-
-void	ft_putnbr(long nb)
-{
-	if (nb < 0)
-	{
-		nb = -nb;
-		ft_putchar('-');
-	}
-	if (nb < 10)
-		ft_putchar(nb + 48);
-	else
-	{
-		ft_putnbr(nb / 10);
-		ft_putnbr(nb % 10);
-	}
-}
-
-
-
-void custom_print(t_philo *ph, int time, char *message, int type)
+void custom_print(t_philo *ph, long int time, char *message, int type)
 {
 	pthread_mutex_lock(ph->all->print);
-//	if (!ph->all->flag_dead)
-//	{
-//		ft_putnbr(time);
-//		ft_putstr("\tms\t");
-//		ft_putnbr(ph->num);
-//		ft_putchar('\t');
-//		ft_putstr(message);
-
-		printf("%d\tms\t%d\t%s", time, ph->num, message);
-//	}
-	if (type !=2)
+	printf("%ld\tms\t%d\t%s", time, ph->num, message);
+	if (type != 2)
 		pthread_mutex_unlock(ph->all->print);
 }
