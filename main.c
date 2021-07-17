@@ -5,6 +5,7 @@ int	main(int argc, char **argv)
 	t_all	all;
 	t_philo	*philo;
 
+	philo = NULL;
 	check_args_valid(argc, argv);
 	init_structure(&all, argc, argv);
 	philo = philos_init(&all);
@@ -57,6 +58,8 @@ void	init_structure(t_all *all, int argc, char **argv)
 		write(1, "Argument is too small\n", 22);
 		exit (1);
 	}
+	all->flag = 0;
+	pthread_mutex_init(&all->flag_lock, NULL);
 	all->forks = malloc(sizeof(pthread_mutex_t) * (all->number_of_philo + 1));
 	i = -1;
 	while (++i < all->number_of_philo)
@@ -99,8 +102,10 @@ void	threads_close(t_philo *philo)
 
 	i = -1;
 	while (++i < philo->all->number_of_philo)
-		pthread_detach(philo->ph[i]);
-	usleep(50);
+		pthread_join(philo->ph[i], NULL);
+//	i = -1;
+//	while (++i < philo->all->number_of_philo)
+//		pthread_detach(philo->ph[i]);
 	pthread_join(philo->all->death_checker, NULL);
 	pthread_detach(philo->all->death_checker);
 	i = -1;
@@ -111,6 +116,6 @@ void	threads_close(t_philo *philo)
 		free(philo->all->forks);
 	if (philo->ph)
 		free(philo->ph);
-	if (philo)
+	if ((philo))
 		free(philo);
 }

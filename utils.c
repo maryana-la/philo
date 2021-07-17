@@ -45,16 +45,24 @@ void	ft_free_error(char *error, t_philo *philo)
 		free(philo->all->forks);
 	if (philo->ph)
 		free(philo->ph);
-	if (philo)
-		free(philo);
+//	if (philo)
+//		free(philo);
 	printf("%s\n", error);
 	exit (1);
 }
 
 void	custom_print(t_philo *ph, long int time, char *message, int type)
 {
-	pthread_mutex_lock(&ph->all->print);
-	printf("%ld\tms\t%d\t%s", time, ph->num, message);
-	if (type != 2)
+	if (!ph->all->flag)
+	{
+		pthread_mutex_lock(&ph->all->print);
+		printf("%ld\tms\t%d\t%s", time, ph->num, message);
 		pthread_mutex_unlock(&ph->all->print);
+	}
+	if (type == 2)
+	{
+		pthread_mutex_lock(&ph->all->print);
+		printf("%ld\tms\t%d\t%s", time, ph->num, message);
+		pthread_mutex_unlock(&ph->all->print);
+	}
 }

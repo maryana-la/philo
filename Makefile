@@ -2,7 +2,7 @@ NAME	=	philo
 
 CC		=	gcc
 
-CFLAGS 	=	-Wall -Wextra -Werror -pthread
+CFLAGS 	=	-Wall -Wextra -Werror -pthread -g
 
 SRC		:=	main.c threads.c utils.c ft_isdigit.c ft_atoi.c
 

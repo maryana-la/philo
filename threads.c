@@ -23,6 +23,9 @@ void	*life_check(void *p)
 		{
 			if ((get_time() - ph[i].last_ate) > (ph[0].all->time_to_die))
 			{
+				pthread_mutex_lock(&ph[0].all->flag_lock);
+				ph[0].all->flag = 1;
+				pthread_mutex_unlock(&ph[0].all->flag_lock);
 				custom_print(&ph[i], \
 				(long int)(get_time() - ph->all->start_time), "died\n", 2);
 				return (NULL);
@@ -31,6 +34,7 @@ void	*life_check(void *p)
 		}
 		if (full_philos == ph[0].all->number_of_philo)
 		{
+			ph[0].all->flag = 1;
 			pthread_mutex_lock(&ph->all->print);
 			return (NULL);
 		}
@@ -60,7 +64,7 @@ void	*routine(void *i)
 
 	ph = (t_philo *)i;
 	ph->last_ate = get_time();
-	while (1)
+	while (ph->all->flag == 0)
 	{
 		philosopher_eats(ph);
 		custom_print(ph, (long int)(get_time() - ph->all->start_time),

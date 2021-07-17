@@ -16,9 +16,11 @@ typedef struct s_all
 	int				time_to_sleep;
 	int				num_of_meal;
 	long int		start_time;
+	int 			flag;
 	struct timeval	start;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print;
+	pthread_mutex_t flag_lock;
 	pthread_t		death_checker;
 }				t_all;
 
