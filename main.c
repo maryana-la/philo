@@ -103,9 +103,6 @@ void	threads_close(t_philo *philo)
 	i = -1;
 	while (++i < philo->all->number_of_philo)
 		pthread_join(philo->ph[i], NULL);
-//	i = -1;
-//	while (++i < philo->all->number_of_philo)
-//		pthread_detach(philo->ph[i]);
 	pthread_join(philo->all->death_checker, NULL);
 	pthread_detach(philo->all->death_checker);
 	i = -1;
