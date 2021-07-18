@@ -50,7 +50,7 @@ void		threads_close(t_philo *philo);
  */
 
 void		*life_check(void *p);
-void		food_control(t_philo *ph, int *full, int i);
+int			check_if_dead(t_philo *ph, int *full_philos, int i);
 void		*routine(void *i);
 void		philosopher_eats(t_philo *ph);
 void		threads_init(t_philo *philo);
