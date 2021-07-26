@@ -79,8 +79,8 @@ t_philo	*philos_init(t_all *all)
 	while (++i < all->number_of_philo)
 	{
 		philo[i].num = i + 1;
-		philo[i].last_ate = 0;
 		philo[i].num_eat = 0;
+		philo[i].last_ate = 0;
 		philo[i].all = all;
 		if ((i + 1) != all->number_of_philo)
 		{

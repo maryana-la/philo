@@ -6,11 +6,13 @@ CFLAGS 	=	-Wall -Wextra -Werror -pthread -g
 
 SRC		:=	main.c threads.c utils.c ft_isdigit.c ft_atoi.c
 
-OBJ 	:=	${SRC:.c=.o}
-
 HEADERS	=	philo.h
 
-%.o : %.c $(HEADERS)
+O_FOLD	=	objs/
+OBJ	:=	$(addprefix $(O_FOLD), $(SRC:.c=.o))
+
+$(O_FOLD)%.o: %.c $(HEADER)
+	@mkdir -p objs
 	$(CC) $(CFLAGS) -c $< -o $@
 
 all: $(NAME)
@@ -20,6 +22,7 @@ $(NAME): $(OBJ) $(HEADERS)
 
 clean:
 	rm -f $(OBJ)
+	@rm -rf $(O_FOLD)
 
 fclean: clean
 	rm -f $(NAME)

@@ -17,7 +17,6 @@ typedef struct s_all
 	int				num_of_meal;
 	long int		begin;
 	int				flag;
-	struct timeval	start;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print;
 	pthread_mutex_t	flag_lock;

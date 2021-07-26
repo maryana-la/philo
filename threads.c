@@ -26,6 +26,7 @@ void	*life_check(void *p)
 	ph = (t_philo *)p;
 	while (1)
 	{
+		usleep(1000);
 		i = -1;
 		full_philos = 0;
 		while (++i < ph[0].all->number_of_philo)
@@ -67,6 +68,13 @@ void	*routine(void *i)
 
 	ph = (t_philo *)i;
 	ph->last_ate = get_time();
+	if (ph->all->number_of_philo == 1)
+	{
+		custom_print(ph, (long int)(get_time() - ph->all->begin),
+			 "has taken a left fork\n", 1);
+		custom_sleep(ph->all->time_to_die * 1000);
+		return (NULL);
+	}
 	while (ph->all->flag == 0)
 	{
 		philosopher_eats(ph);

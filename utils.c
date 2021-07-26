@@ -26,7 +26,7 @@ void	custom_sleep(long int time)
 			(current_time.tv_sec * 1000 + current_time.tv_usec / 1000) * 1000;
 		if (current - begin < (long int)(time))
 		{
-			usleep(50);
+			usleep(500);
 			continue ;
 		}
 		break ;
