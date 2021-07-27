@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   threads.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rchelsea <rchelsea@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/07/27 15:52:42 by rchelsea          #+#    #+#             */
+/*   Updated: 2021/07/27 15:53:54 by rchelsea         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 int	check_if_dead(t_philo *ph, int *full_philos, int i)
@@ -87,7 +99,7 @@ void	*routine(void *i)
 	return (NULL);
 }
 
-void 	threads_init(t_philo *philo)
+void	threads_init(t_philo *philo)
 {
 	pthread_t	checker;
 	int			i;
